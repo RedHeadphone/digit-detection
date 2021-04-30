@@ -1,4 +1,7 @@
 import pygame as p
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
 
 side=588
 numbox=28
@@ -7,6 +10,8 @@ eachlen=side//numbox
 p.init()
 screen=p.display.set_mode((side,side+60))
 p.display.set_caption("Path Finding")
+
+model = tf.keras.models.load_model('digits.model')
 
 class Button:
     def __init__(self,x,y,st,c1,c2,w):
@@ -27,7 +32,8 @@ class Button:
                 if self.st=="reset":
                     blocks=[[0 for i in range(numbox)] for i in range(numbox)]
                 if self.st=="detect digit":
-                    print("bruh not programmed")
+                    prediction = model.predict([blocks])
+                    print(np.argmax(prediction))
             self.lastclick=click
         else :
             self.bool=True
@@ -50,7 +56,7 @@ blocks=[[0 for i in range(numbox)] for i in range(numbox)]
 def draw_grid():
     for i in range(numbox):
         for j in range(numbox):
-            if blocks[i][j]==1:
+            if blocks[j][i]==1:
                 p.draw.rect(screen,(0,0,0),[(i*eachlen,j*eachlen),(eachlen,eachlen)])
     for x in range(1,numbox+1):
         p.draw.line(screen,(0,0,0),(0,x*eachlen),(side,x*eachlen),2)
@@ -68,7 +74,7 @@ while not done:
     mot0,mot1=p.mouse.get_pos()
     if mo[0]==1 and mot1<side:
         pos=((mot0//eachlen),(mot1//eachlen))
-        blocks[pos[0]][pos[1]]=1
+        blocks[pos[1]][pos[0]]=1
 
     screen.fill((255,255,255))
     draw_grid()
