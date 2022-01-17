@@ -1,7 +1,6 @@
 import pygame as p
 import tensorflow as tf
 import numpy as np
-import matplotlib.pyplot as plt
 
 side=588
 numbox=28
@@ -9,7 +8,7 @@ eachlen=side//numbox
 
 p.init()
 screen=p.display.set_mode((side,side+60))
-p.display.set_caption("Path Finding")
+p.display.set_caption("Digit Detection")
 
 model = tf.keras.models.load_model('digits.model')
 
@@ -25,15 +24,16 @@ class Button:
         self.lastclick=0
 
     def check(self,x1,y1,click):
-        global blocks
+        global blocks, digitdetected
         if self.x<x1<self.x+100 and self.y<y1<self.y+40:
             self.bool=False
             if click==0 and self.lastclick==1:
                 if self.st=="reset":
                     blocks=[[0 for i in range(numbox)] for i in range(numbox)]
+                    digitdetected=None
                 if self.st=="detect digit":
                     prediction = model.predict([blocks])
-                    print(np.argmax(prediction))
+                    digitdetected=np.argmax(prediction)
             self.lastclick=click
         else :
             self.bool=True
@@ -64,7 +64,8 @@ def draw_grid():
         p.draw.line(screen,(0,0,0),(y*eachlen,0),(y*eachlen,side),2)
 
 done=False
-Bs=[Button(10,598,"reset",(75,194,197),(52,132,152),100),Button(428,598,"detect digit",(200,200,30),(200,100,30),150)]
+Bs=[Button(10,598,"reset",(75,194,197),(52,132,152),130),Button(448,598,"detect digit",(200,200,30),(200,100,30),130)]
+digitdetected = None
 
 while not done:
     for event in p.event.get():
@@ -75,11 +76,20 @@ while not done:
     if mo[0]==1 and mot1<side:
         pos=((mot0//eachlen),(mot1//eachlen))
         blocks[pos[1]][pos[0]]=1
+    if mo[2]==1 and mot1<side:
+        pos=((mot0//eachlen),(mot1//eachlen))
+        blocks[pos[1]][pos[0]]=0
 
     screen.fill((255,255,255))
     draw_grid()
     for b in Bs:
         b.check(mot0,mot1,mo[0])
         b.draw_button()
+    if digitdetected is not None:
+        font = p.font.Font('freesansbold.ttf',18)
+        text = font.render("detected digit : "+str(digitdetected), True, (0,0,0)) 
+        textRect = text.get_rect()
+        textRect.center = (side//2, side+30)
+        screen.blit(text, textRect)
     p.display.update()
 p.quit()

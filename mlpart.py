@@ -1,6 +1,3 @@
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
 import tensorflow as tf
 
 mnist = tf.keras.datasets.mnist
@@ -24,6 +21,7 @@ model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['
 model.fit(xtrain,ytrain,epochs=3)
 
 loss,acc =model.evaluate(xtest,ytest)
-print(acc,loss)
+print("accuracy:",acc)
+print("loss:",loss)
 
 model.save('digits.model')
