@@ -10,7 +10,7 @@ p.init()
 screen=p.display.set_mode((side,side+60))
 p.display.set_caption("Digit Detection")
 
-model = tf.keras.models.load_model('digits.model')
+model = tf.keras.models.load_model('model.h5')
 
 class Button:
     def __init__(self,x,y,st,c1,c2,w):

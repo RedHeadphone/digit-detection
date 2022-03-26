@@ -24,4 +24,4 @@ loss,acc =model.evaluate(xtest,ytest)
 print("accuracy:",acc)
 print("loss:",loss)
 
-model.save('digits.model')
+model.save('model.h5')

@@ -3,7 +3,7 @@
 Detects the digit drawn on a 28x28 pixel grid using artificial neural network implemented by tensorflow.
 
 <p align="center">
-  <img alt="demo" height="500px" src="assets/demo.gif"/>
+  <img alt="demo" height="500px" src="assets/demo.png"/>
 </p>
 
 ## Requirements
